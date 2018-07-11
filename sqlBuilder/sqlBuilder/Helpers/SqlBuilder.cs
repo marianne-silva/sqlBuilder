@@ -6,6 +6,12 @@ namespace sqlBuilder.Helpers
 {
     public static class SqlBuilder
     {
+        public static StringBuilder GeneratedSQL = new StringBuilder();
+        /// <summary>
+        /// Method that generates the fields of a datatable based on his columns' name.
+        /// </summary>
+        /// <param name="dataTable"></param>
+        /// <returns></returns>
         public static string GenerateFields(DataTable dataTable)
         {
             string fields = string.Empty;
@@ -18,6 +24,14 @@ namespace sqlBuilder.Helpers
             return fields;           
         }
 
+        /// <summary>
+        /// Method that inserts a parameter into a sql command.
+        /// </summary>
+        /// <param name="sqlCommand"></param>
+        /// <param name="pamName"></param>
+        /// <param name="srcColumn"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static SqlCommand InsertParameter(SqlCommand sqlCommand, string pamName, string srcColumn, object value)
         {
             SqlParameter sqlParameter = new SqlParameter(pamName, value);
@@ -31,36 +45,42 @@ namespace sqlBuilder.Helpers
             return sqlCommand;
         }
 
-        public static SqlCommand BuildInsertCommand(DataRow dtRow)
-        {
-            DataTable dt = dtRow.Table;
-            string sql = BuildInsert(dt);
-            SqlCommand sqlCommand = new SqlCommand(sql);
-            sqlCommand.CommandType = CommandType.Text;
 
-            foreach (DataColumn dtColumn in dt.Columns)
-            {
-                if (!dtColumn.AutoIncrement)
-                {
-                    string parameterName = "@" + dtColumn.ColumnName;
-                    InsertParameter(sqlCommand, parameterName, dtColumn.ColumnName, dtRow[dtColumn.ColumnName]);
-                }
-            }
-            return sqlCommand;
-        }
-
-        public static object InsertRow(DataRow row, string connectionString)
+        /// <summary>
+        /// Method that return an insert command built in with parameters.
+        /// </summary>
+        /// <param name="dtRow"></param>
+        /// <returns></returns>
+        public static void BuildInsertCommand(DataTable dataTable)
         {
-            SqlCommand sqlCommand = BuildInsertCommand(row);
-            using(SqlConnection connection = new SqlConnection(connectionString))
+            string sql = BuildInsert(dataTable);
+            SqlCommand sqlCommand = null;
+
+            foreach (DataRow row in dataTable.Rows)
             {
-                sqlCommand.Connection = connection;
+                sqlCommand = new SqlCommand(sql);
                 sqlCommand.CommandType = CommandType.Text;
-                connection.Open();
-                return sqlCommand.ExecuteScalar();
-            }
-        }
 
+                foreach (DataColumn dtColumn in dataTable.Columns)
+                {
+                    sqlCommand = InsertParameter(sqlCommand, dtColumn.ColumnName, dtColumn.ColumnName, row[dtColumn.ColumnName]);
+                }
+
+                foreach (SqlParameter parameter in sqlCommand.Parameters)
+                {
+                    sqlCommand.CommandText = sqlCommand.CommandText.Replace("@" + parameter.ParameterName, "'" + parameter.Value.ToString() + "'");
+                }
+
+                GeneratedSQL.Append(sqlCommand.CommandText);
+                GeneratedSQL.AppendLine("");
+            }
+
+        }   
+        /// <summary>
+        /// Methot that builds the insert.
+        /// </summary>
+        /// <param name="dataTable"></param>
+        /// <returns></returns>
         public static string BuildInsert(DataTable dataTable)
         {
             StringBuilder stBuilder = new StringBuilder("INSERT INTO " + dataTable.TableName + " (");

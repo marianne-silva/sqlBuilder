@@ -9,6 +9,9 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Collections.Generic;
 using sqlBuilder.Log;
+using System.Diagnostics;
+using sqlBuilder.Data.Models.PersonsTableAdapters;
+using static sqlBuilder.Data.Models.Persons;
 
 namespace sqlBuilder
 {
@@ -17,37 +20,30 @@ namespace sqlBuilder
         static void Main(string[] args)
         {
             //Log Instance
-            Logger log = new Logger();
-            log.WriteEntry("Iniciando o SQL BUILDER");
-            Persons dsPersons = new Persons();
-            List<string> text = new List<string>();
-            DataTable dt = ExcelReader.ReadRows();
+            Logger Log = new Logger();
+            Log.WriteEntry("Iniciando o SQL BUILDER", EventLogEntryType.Information);
+            //DataSet Instance
+            PersonsTableAdapter dsPersons = new PersonsTableAdapter();
+
+            #region DataBase Test
+            //Getting DataTable
+            PersonsDataTable dt = null;
+            dsPersons.Fill(dt);
+            //Generate the insert command from an excel file.
+            SqlBuilder.BuildInsertCommand(dt);
+
+            FileManager.WriteText(SqlBuilder.GeneratedSQL.ToString(), AppSettings.SCRIPT_PATH);
+            #endregion
+
+            #region Excel Test
+            DataTable dataTable = null;
+            //Reading Excel and Generate a DataTable
+            dataTable = ExcelReader.ReadRows();
+            //Setting a name to the Data Table.
             dt.TableName = "dbo.Persons";
-            string fields = SqlBuilder.GenerateFields(dt);
-            //Console.WriteLine(fields);
-            string sqlCommand = SqlBuilder.BuildInsert(dt);
-            //Console.WriteLine(sqlCommand);
-            var s = "Data Source=DESKTOP-7E4JGAN;Initial Catalog=master;Integrated Security=True";
-            StringBuilder st = new StringBuilder();
-            foreach (DataRow item in dt.Rows)
-            {
-                SqlCommand v = null;
-                var insert = SqlBuilder.BuildInsertCommand(item);
-                foreach (DataColumn t in dt.Columns)
-                {
-                     v = SqlBuilder.InsertParameter(insert, t.ColumnName, t.ColumnName, item[t]);
-                }
+            #endregion
 
-                foreach (SqlParameter r in v.Parameters)
-                {
-                   v.CommandText= v.CommandText.Replace("@"+r.ParameterName, "'" + r.Value.ToString() + "'");
-                }
-                st.Append(v.CommandText);
-                text.Add(v.CommandText);
-
-            }
-            FileManager.CreateFile(text);
-            //Console.WriteLine(st.ToString());
+            Console.WriteLine("Scripts e Log gerados com sucesso. Aperte uma tecla para finalizar.");
             Console.ReadLine();
         }
     }

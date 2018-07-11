@@ -35,6 +35,31 @@ namespace sqlBuilder
 
             }
         }
+        //TODO Terminar esse método.
+        public static string ReadLine(string path)
+        {
+
+            try
+            {
+                if (!File.Exists(path))
+                {
+                    throw new Exception("Trying to read an nonexistent file.");
+                }
+
+                var lines = File.ReadAllLines(path);
+                
+
+            }
+            //TODO Tratar essa exceção
+            catch (Exception ex)
+            {
+
+                // throw;
+            }
+
+            return String.Empty;
+
+        }
 
         public static void WriteText(string text, string path)
         {
@@ -47,6 +72,7 @@ namespace sqlBuilder
                 using (StreamWriter fs = File.AppendText(path))
                 {
                     fs.Write(text);
+                    Console.WriteLine(text);
                     fs.WriteLine("");
                 }
             }

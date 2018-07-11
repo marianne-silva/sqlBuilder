@@ -24,7 +24,7 @@
                 </InsertCommand>
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
-                    <CommandText>SELECT        Persons.*
+                    <CommandText>SELECT        PersonID, LastName, FirstName, Address, City
 FROM            Persons</CommandText>
                     <Parameters />
                   </DbCommand>
@@ -48,7 +48,7 @@ FROM            Persons</CommandText>
   <xs:element name="Persons" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="Persons" msprop:Generator_UserDSName="Persons">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="Persons" msprop:Generator_TableClassName="PersonsDataTable" msprop:Generator_TableVarName="tablePersons" msprop:Generator_TablePropName="_Persons" msprop:Generator_RowDeletingName="PersonsRowDeleting" msprop:Generator_RowChangingName="PersonsRowChanging" msprop:Generator_RowEvHandlerName="PersonsRowChangeEventHandler" msprop:Generator_RowDeletedName="PersonsRowDeleted" msprop:Generator_UserTableName="Persons" msprop:Generator_RowChangedName="PersonsRowChanged" msprop:Generator_RowEvArgName="PersonsRowChangeEvent" msprop:Generator_RowClassName="PersonsRow">
+        <xs:element name="Persons" msprop:Generator_TableClassName="PersonsDataTable" msprop:Generator_TableVarName="tablePersons" msprop:Generator_RowChangedName="PersonsRowChanged" msprop:Generator_TablePropName="_Persons" msprop:Generator_RowDeletingName="PersonsRowDeleting" msprop:Generator_RowChangingName="PersonsRowChanging" msprop:Generator_RowEvHandlerName="PersonsRowChangeEventHandler" msprop:Generator_RowDeletedName="PersonsRowDeleted" msprop:Generator_RowClassName="PersonsRow" msprop:Generator_UserTableName="Persons" msprop:Generator_RowEvArgName="PersonsRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="PersonID" msprop:Generator_ColumnVarNameInTable="columnPersonID" msprop:Generator_ColumnPropNameInRow="PersonID" msprop:Generator_ColumnPropNameInTable="PersonIDColumn" msprop:Generator_UserColumnName="PersonID" type="xs:int" minOccurs="0" />
