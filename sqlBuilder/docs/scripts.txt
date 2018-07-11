@@ -1,0 +1,4 @@
+INSERT INTO dbo.Persons (PersonID, LastName, FirstName, Address, City) VALUES ('5003', 'Marianne', 'Kellen', 'marikell_silva@hotmail.com', 'Votorantim')
+
+INSERT INTO dbo.Persons (PersonID, LastName, FirstName, Address, City) VALUES ('5002', 'Lucas', 'Scaravelli', 'lucas.savioli@gmail.com', 'Itu')
+
